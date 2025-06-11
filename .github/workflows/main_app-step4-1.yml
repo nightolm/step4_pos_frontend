@@ -26,11 +26,10 @@ jobs:
 
       - name: Prepare deploy folder
         run: |
-          mkdir deploy
-          cp -r .next deploy/.next
-          cp -r node_modules deploy/node_modules
-          cp package.json deploy/
-          cp next.config.js deploy/
+          mkdir -p deploy
+          cp -r .next/standalone/* deploy/
+          cp -r .next/static deploy/.next/static
+          cp -r public deploy/public || true
           zip -r release.zip deploy
 
       - name: Upload artifact
@@ -54,7 +53,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'app-step4-1'
+          app-name: 'app-step4-1'  # Azure側のApp Service名
           slot-name: 'Production'
           package: ./deploy
-          publish-profile: ${{ secrets.POS4 }}
+          publish-profile: ${{ secrets.POS4 }}  # Secrets登録名（正確に）
