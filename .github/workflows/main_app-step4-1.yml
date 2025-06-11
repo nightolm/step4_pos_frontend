@@ -57,11 +57,10 @@ jobs:
       - name: Unzip artifact
         run: unzip release.zip
 
-    
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APPSTEP4POS }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APPSTEP4POS }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
@@ -69,4 +68,3 @@ jobs:
           app-name: 'app-step4-1'
           slot-name: 'Production'
           package: ./deploy
-
