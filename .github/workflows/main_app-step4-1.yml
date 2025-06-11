@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
 
@@ -33,7 +33,7 @@ jobs:
           cp -r .next deploy/.next
           cp -r node_modules deploy/node_modules
           cp package.json deploy/
-          cp next.config.js deploy/
+          cp next.config.js deploy/ 2>/dev/null || echo "next.config.js not found, skipping"
           zip -r release.zip deploy
 
       - name: Upload artifact
@@ -58,11 +58,22 @@ jobs:
       - name: Unzip artifact
         run: unzip release.zip
 
+      - name: Debug - Check files and secrets
+        run: |
+          echo "Files in current directory:"
+          ls -la
+          echo "Files in deploy directory:"
+          ls -la deploy/
+          echo "Checking publish profile secret (first 50 chars):"
+          echo "${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}" | head -c 50
+        env:
+          PUBLISH_PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: 'app-step4-1'  # ←AzureのApp Service名と完全一致
+          app-name: 'app-step4-1'
           slot-name: 'Production'
           package: ./deploy
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}
