@@ -2,5 +2,8 @@
 
 module.exports = {
   reactStrictMode: true,
-  output: 'standalone',  // ← これを追加！
+  output: 'standalone',
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  },
 };
