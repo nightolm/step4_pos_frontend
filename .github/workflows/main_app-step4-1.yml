@@ -29,7 +29,9 @@ jobs:
         run: cat .env.local
 
       - name: Build Next.js app
-        run: npm run build
+        run: |
+          echo "### DEBUG: NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
+          npm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
