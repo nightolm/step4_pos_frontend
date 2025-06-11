@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 
 export default function Home() {
+  console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+
   const [code, setCode] = useState('');
   const [item, setItem] = useState(null);
   const [itemMessage, setItemMessage] = useState('');
