@@ -28,8 +28,9 @@ jobs:
         run: |
           mkdir -p deploy
           cp -r .next/standalone/* deploy/
-          cp -r .next/static deploy/.next/static
-          cp -r public deploy/public || true
+          [ -d ".next/static" ] && cp -r .next/static deploy/.next/static || echo "No .next/static, skipping"
+          [ -d "public" ] && cp -r public deploy/public || echo "No public folder, skipping"
+          cp next.config.js deploy/
           zip -r release.zip deploy
 
       - name: Upload artifact
@@ -53,7 +54,8 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'app-step4-1'
+          app-name: 'app-step4-1'  # Azure App Service 名
           slot-name: 'Production'
           package: ./deploy
-          publish-profile: ${{ secrets.POS4 }}
+          publish-profile: ${{ secrets.POS4 }}  # GitHub Secrets に登録済みの発行プロファイル名
+
