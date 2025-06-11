@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Create .env.local
         run: echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.local
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Build Next.js app
         run: npm run build
