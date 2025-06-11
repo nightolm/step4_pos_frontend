@@ -28,7 +28,6 @@ jobs:
         run: |
           mkdir deploy
           cp -r .next deploy/.next
-          cp -r public deploy/public || true
           cp -r node_modules deploy/node_modules
           cp package.json deploy/
           cp next.config.js deploy/
@@ -55,7 +54,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'app-step4-1'  # ←App Service 名（間違いなし）
+          app-name: 'app-step4-1'
           slot-name: 'Production'
           package: ./deploy
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}
+          publish-profile: ${{ secrets.POS4 }}
