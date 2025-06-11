@@ -1,6 +1,5 @@
 name: Build and deploy Next.js app to Azure Web App - app-step4-1
 
-
 on:
   push:
     branches:
@@ -48,7 +47,6 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact
@@ -59,11 +57,16 @@ jobs:
       - name: Unzip artifact
         run: unzip release.zip
 
+    
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APPSTEP4POS }}
+
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'app-step4-1'
           slot-name: 'Production'
           package: ./deploy
-          publish-profile: ${{secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APPSTEP4POS}}
+
