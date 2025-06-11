@@ -18,12 +18,6 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Create .env.local
-        run: echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.local
-
-      - name: Check .env.local
-        run: cat .env.local  # ← 一時的な確認用
-
       - name: Install dependencies
         run: npm install
 
