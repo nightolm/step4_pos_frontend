@@ -105,3 +105,4 @@ jobs:
           app-name: 'app-step4-1'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}
           package: .
+          slot-name: 'production'
