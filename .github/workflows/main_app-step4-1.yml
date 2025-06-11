@@ -53,7 +53,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'app-step4-1'  # Azure側のApp Service名
+          app-name: 'app-step4-1'
           slot-name: 'Production'
           package: ./deploy
-          publish-profile: ${{ secrets.POS4 }}  # Secrets登録名（正確に）
+          publish-profile: ${{ secrets.POS4 }}
