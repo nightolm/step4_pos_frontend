@@ -61,4 +61,4 @@ jobs:
           app-name: 'app-step4-1'  
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APPSTEP4POS} 
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APPSTEP4POS}}
