@@ -27,14 +27,40 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Prepare deploy folder
+      - name: Create deployment package
         run: |
+          echo "=== Creating deployment package ==="
           mkdir deploy
+          
+          # Copy built Next.js files
           cp -r .next deploy/.next
+          
+          # Copy node_modules (required for Next.js runtime)
           cp -r node_modules deploy/node_modules
+          
+          # Copy package files
           cp package.json deploy/
-          cp next.config.js deploy/ 2>/dev/null || echo "next.config.js not found, skipping"
-          zip -r release.zip deploy
+          cp package-lock.json deploy/ 2>/dev/null || echo "No package-lock.json found"
+          
+          # Copy Next.js config if exists
+          cp next.config.js deploy/ 2>/dev/null || echo "No next.config.js found"
+          
+          # Copy pages directory (source files needed for dynamic routing)
+          cp -r pages deploy/pages
+          
+          # Copy public directory if exists
+          if [ -d "public" ]; then
+            cp -r public deploy/public
+            echo "Public directory copied"
+          else
+            echo "No public directory found"
+          fi
+          
+          echo "=== Deployment package contents ==="
+          ls -la deploy/
+          
+          # Create zip file
+          cd deploy && zip -r ../release.zip . && cd ..
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -58,22 +84,24 @@ jobs:
       - name: Unzip artifact
         run: unzip release.zip
 
-      - name: Debug - Check files and secrets
+      - name: Debug - Verify deployment structure
         run: |
-          echo "Files in current directory:"
+          echo "=== Root directory contents ==="
           ls -la
-          echo "Files in deploy directory:"
-          ls -la deploy/
-          echo "Checking publish profile secret (first 50 chars):"
-          echo "${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}" | head -c 50
-        env:
-          PUBLISH_PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}
+          echo ""
+          echo "=== Package.json content ==="
+          cat package.json
+          echo ""
+          echo "=== Next.js build verification ==="
+          ls -la .next/ 2>/dev/null || echo "No .next directory"
+          echo ""
+          echo "=== Pages directory ==="
+          ls -la pages/ 2>/dev/null || echo "No pages directory"
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'app-step4-1'
-          slot-name: 'Production'
-          package: ./deploy
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_POS4 }}
+          package: .
