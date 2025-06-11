@@ -1,8 +1,9 @@
+// pages/index.js
 import { useState } from 'react';
 
-
 export default function Home() {
-  console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+  // ビルド後・ブラウザ実行時に URL が正しく出力されるか確認用
+  console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
 
   const [code, setCode] = useState('');
   const [item, setItem] = useState(null);
@@ -10,10 +11,11 @@ export default function Home() {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
 
+  // NEXT_PUBLIC_API_URL が undefined ならローカル開発用 localhost を使用
+  const apiUrl =
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-  
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
+  // 商品取得
   const fetchProduct = async () => {
     const res = await fetch(`${apiUrl}/products/${code}`);
     if (res.ok) {
@@ -26,6 +28,7 @@ export default function Home() {
     }
   };
 
+  // リストに追加
   const addItem = () => {
     if (!item) return;
     setList([...list, item]);
@@ -35,6 +38,7 @@ export default function Home() {
     setItemMessage('');
   };
 
+  // 購入確定
   const purchase = async () => {
     const res = await fetch(`${apiUrl}/transactions`, {
       method: 'POST',
@@ -43,17 +47,14 @@ export default function Home() {
         emp_cd: '9999999999',
         store_cd: '30',
         pos_no: '90',
-        items: list.map(({ code, name, price }) => ({ code, name, price }))
-      })
+        items: list.map(({ code, name, price }) => ({ code, name, price })),
+      }),
     });
     const data = await res.json();
     if (data.success) {
       alert(`購入完了! 合計: ${data.total}円`);
       setList([]);
       setTotal(0);
-      setItem(null);
-      setCode('');
-      setItemMessage('');
     } else {
       alert('購入失敗');
     }
@@ -95,4 +96,13 @@ export default function Home() {
       </button>
     </main>
   );
+}
+
+/**
+ * 空の getServerSideProps を置くことで、
+ * ページが「SSR扱い」になり静的エクスポート(nextExport)が無効化される。
+ * これにより NEXT_PUBLIC_API_URL がクライアント側に埋め込まれる。
+ */
+export async function getServerSideProps() {
+  return { props: {} };
 }
