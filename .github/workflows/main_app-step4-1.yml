@@ -1,5 +1,4 @@
-name: Build and deploy Node.js app to Azure Web App - app-step4-1
-
+name: Build and deploy Next.js app to Azure Web App - app-step4-1
 
 on:
   push:
@@ -14,26 +13,24 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: Install dependencies & Build
-        run: |
-          npm install
-          npm run build
+      - name: Install dependencies
+        run: npm install
 
-      - name: Zip Next.js build output
+      - name: Build Next.js app
+        run: npm run build
+
+      # デプロイ用 ZIP アーカイブを作成（.git や node_modules は除外）
+      - name: Zip app for deployment
         run: |
-          mkdir deploy
-          cp -R .next deploy/.next
-          cp -R node_modules deploy/node_modules
-          cp package.json deploy/package.json
-          cp next.config.js deploy/next.config.js
-          zip -r release.zip deploy
+          zip -r release.zip . -x "*.git*" "node_modules/*" ".next/cache/*"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -61,7 +58,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'app-step4-1'
+          app-name: 'app-step4-1'  
           slot-name: 'Production'
-          package: ./deploy
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8A2024E3B5F04452AA01B958BD332B52 }}
+          package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APPSTEP4POS} 
