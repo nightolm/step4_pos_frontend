@@ -1,5 +1,7 @@
 module.exports = {
   reactStrictMode: true,
   output: 'standalone',
-  trailingSlash: false,      // ← これだけ追加
+  // これを追加
+  trailingSlash: false,
+  staticPageGenerationTimeout: 300, // optional
 };
