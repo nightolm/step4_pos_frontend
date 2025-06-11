@@ -7,6 +7,8 @@ export default function Home() {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
 
+
+  
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   const fetchProduct = async () => {
