@@ -47,7 +47,7 @@ jobs:
           cp -r .next/standalone/* deploy/
           [ -d ".next/static" ] && cp -r .next/static deploy/.next/static || echo "skip static"
           [ -d "public" ] && cp -r public deploy/public || echo "skip public"
-          cp next.config.js deploy/
+          cp next.config.js package.json deploy/
           zip -r release.zip deploy
 
       - name: Upload artifact
