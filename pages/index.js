@@ -13,7 +13,7 @@ export default function Home() {
 
   // NEXT_PUBLIC_API_URL が undefined ならローカル開発用 localhost を使用
   const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    process.env.NEXT_PUBLIC_API_URL;
 
   // 商品取得
   const fetchProduct = async () => {
