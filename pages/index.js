@@ -2,7 +2,6 @@
 import { useState } from 'react';
 
 export default function Home() {
-  // ビルド後・ブラウザ実行時に URL が正しく出力されるか確認用
   console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
 
   const [code, setCode] = useState('');
@@ -11,20 +10,30 @@ export default function Home() {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
 
-  // NEXT_PUBLIC_API_URL が undefined ならローカル開発用 localhost を使用
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   // 商品取得
   const fetchProduct = async () => {
-    const res = await fetch(`${apiUrl}/products/${code}`);
-    if (res.ok) {
-      const data = await res.json();
-      setItem(data);
-      setItemMessage('');
-    } else {
+    // 13桁チェック（数字のみ）
+    if (!/^\d{13}$/.test(code)) {
       setItem(null);
-      setItemMessage('商品マスタが未登録です');
+      setItemMessage('13桁の商品コードを入力してください');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${apiUrl}/products/${code}`);
+      if (res.ok) {
+        const data = await res.json();
+        setItem(data);
+        setItemMessage('');
+      } else {
+        setItem(null);
+        setItemMessage('商品マスタが未登録です');
+      }
+    } catch (error) {
+      setItem(null);
+      setItemMessage('商品情報の取得中にエラーが発生しました');
     }
   };
 
