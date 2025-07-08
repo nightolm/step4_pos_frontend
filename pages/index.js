@@ -13,7 +13,8 @@ export default function Home() {
   const [total, setTotal] = useState(0);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
+  console.log(apiUrl);
+  
   // 商品取得
   const fetchProduct = async () => {
     // 13桁チェック（数字のみ）
