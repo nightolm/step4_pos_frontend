@@ -25,7 +25,7 @@ export default function Home() {
     }
 
     try {
-      const res = await fetch(`${apiUrl}/products/${code}`);
+      const res = await fetch(`${apiUrl}products/${code}`);
       if (res.ok) {
         const data = await res.json();
         setItem(data);
@@ -52,7 +52,7 @@ export default function Home() {
 
   // 購入確定
   const purchase = async () => {
-    const res = await fetch(`${apiUrl}/transactions`, {
+    const res = await fetch(`${apiUrl}transactions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
